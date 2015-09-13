@@ -1,5 +1,8 @@
 <?php
+require('simple_html_dom.php');
 define('FM_USER','lastfm-username');
-$d = simplexml_load_file('http://ws.audioscrobbler.com/1.0/user/'.FM_USER.'/recenttracks.rss');
-$post = ' | ' .$d->channel->item[0]->title.'を再生中!';
+$d = file_get_html('http://www.last.fm/ja/user/'.FM_USER);
+$name = $d->find('a.link-block-target',0);
+$author = $d->find('span.chartlist-artists',0)->children(0);
+$post = $name->innertext. ' - ' . $author->innertext;
 header("Location: https://twitter.com/intent/tweet?text=".urlencode($post));
